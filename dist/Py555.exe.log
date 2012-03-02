@@ -1,0 +1,5 @@
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "Tkinter.pyc", line 1410, in __call__
+  File "Py555.py", line 229, in resultado
+ValueError: empty string for float()

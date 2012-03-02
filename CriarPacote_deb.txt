@@ -1,0 +1,48 @@
+Criando arquivos .deb
+O formato .deb é considerado um dos melhores e mais importantes padrões para a distribuição de pacotes binários ou de código fonte pra Linux. Ele é adotado pelo Ubuntu e pelo Debian que são talvez os mais importantes projetos abertos de distribuições Desktop e Server de Linux atualmente, respectivamente.
+
+Para fazer um arquivo deb básico, sem scripts de instalação ou desinstalação, que apenas vai guardar seus arquivos em um diretório especifico no sistema é bem simples.
+
+Por exemplo:
+
+Digamos que queremos fazer um arquivo debian para o meu script calcfx que simplesmente vai instalá-lo no diretório /usr/local/bin do sistema Debian destino (e desinstalar quando solicitado).
+
+
+1. Em seu diretório atual ou de trabalho, crie um subdiretório "debian", "debian/DEBIAN" e defina as permissões 755:
+
+$ mkdir debian
+$ mkdir debian/DEBIAN
+$ find ./debian -type d | xargs chmod 755
+
+2. Criação do arquivo de controle "control":
+
+Crie o arquivo de controle "debian/DEBIAN/control" e defina o valor dos campos: Package (nome do pacote), Versão (no formato (X.X-X), Section (Categoria), Priority, Architeture, Depends (Lista de pacotes dos quais este pacote depende), Maintainer (Responsável pelo pacote), Description (uma descrição do conteúdo do pacote). Por exemplo, do arquivo "control" da calcfx:
+
+Package: calcfx
+Version: 0.1-1
+Section: science
+Priority: optional
+Architecture: all
+Depends: python-numpy
+Maintainer: Felix Farias
+Description: A simple but powerful command line calculator in Python.
+
+4. Criar arvore de diretorios dentro de "debian":
+
+Agora, dentro do diretório "debian" você copia os arquivos e diretórios do seu pacote como se ele fosse a raiz "/" do sistema. Por exemplo, se quero que o script calcfx seja instalado no diretório "/usr/local/bin" no sistema destino:
+
+Supondo que o arquivo calcfx está no seu diretório de trabalho.
+
+mkdir -p debian/usr/local/bin
+cp calcfx debian/usr/local/bin
+
+5. Crie o seu pacote debian (debian.deb) com o dpkg-deb e renomei-o como quiser:
+
+$ dpkg-deb --build debian
+$ mv debian.deb calcfx_0.1-1_all.deb
+
+
+Pronto. Agora você fez o seu arquivo .deb e pode instalar e remover facilmente utilizando o comando "dpkg":
+
+$ dpkg -i calcfx_0.1-1_all.deb
+$ dpkg -r calcfx
